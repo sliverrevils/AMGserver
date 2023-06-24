@@ -18,6 +18,7 @@ async function bootstrap() {
   app.use(passport.session());
   app.enableCors({
     credentials: true,
+    exposedHeaders: ['set-cookie'], //---!!! ???
     origin: [
       'http://localhost:8080',
       'https://am-gclient.vercel.app',
