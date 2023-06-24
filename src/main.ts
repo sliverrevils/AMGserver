@@ -18,7 +18,11 @@ async function bootstrap() {
   app.use(passport.session());
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:8080', 'https://am-gclient.vercel.app'],
+    origin: [
+      'http://localhost:8080',
+      'https://am-gclient.vercel.app',
+      'https://amgclient-production.up.railway.app',
+    ],
     //origin: ['http://localhost:8080'],
   });
 
