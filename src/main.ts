@@ -18,7 +18,8 @@ async function bootstrap() {
   app.use(passport.session());
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:8080'],
+    origin: ['https://am-gclient.vercel.app/'],
+    //origin: ['http://localhost:8080'],
   });
 
   const config = new DocumentBuilder()
