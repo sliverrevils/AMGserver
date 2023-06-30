@@ -24,7 +24,6 @@ async function bootstrap() {
       'https://am-gclient.vercel.app',
       'https://amgclient-production.up.railway.app',
     ],
-    //origin: ['http://localhost:8080'],
   });
 
   const config = new DocumentBuilder()
