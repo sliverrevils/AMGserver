@@ -50,6 +50,7 @@ export class SectionsService {
       section.descriptions = createSectionDto.descriptions;
       section.administrators = createSectionDto.administrators;
       section.ckp = createSectionDto.ckp;
+      section.leadership = createSectionDto.leadership;
       await section.save();
       return this.sectionModel.findAll();
     } else {

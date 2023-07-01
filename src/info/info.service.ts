@@ -77,6 +77,7 @@ export class InfoService {
                     name,
                     ckp,
                     descriptions,
+                    leadership,
                   }) => ({
                     id,
                     office_id,
@@ -84,6 +85,7 @@ export class InfoService {
                     name,
                     ckp,
                     descriptions,
+                    leadership,
                     administrators:
                       await this.administratorsService.findBySectionId(id),
                   }),

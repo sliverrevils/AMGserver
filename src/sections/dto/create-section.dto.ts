@@ -14,6 +14,8 @@ export class CreateSectionDto {
   @IsNotEmpty()
   readonly name: string;
 
+  readonly leadership: number;
+
   @ApiProperty({ example: 'Описание ' })
   readonly descriptions: string;
 

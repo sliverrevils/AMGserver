@@ -11,6 +11,9 @@ export class Section extends Model {
   @Column
   name: string;
 
+  @Column
+  leadership: number;
+
   @Column({ defaultValue: '[]' })
   administrators: string;
 
