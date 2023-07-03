@@ -14,7 +14,7 @@ async function bootstrap() {
       saveUninitialized: false,
       // proxy: true,
       cookie: {
-        sameSite: false,
+        sameSite: 'none',
       },
     }),
   );
