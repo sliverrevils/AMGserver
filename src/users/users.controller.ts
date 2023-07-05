@@ -30,8 +30,8 @@ export class UsersController {
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
   @Header('Content-type', 'application/json')
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  createUser(@Body() createUserDto: CreateUserDto, @Request() { user }) {
+    return this.usersService.create(createUserDto, user);
   }
 
   @ApiBody({ type: LoginUserRequest })

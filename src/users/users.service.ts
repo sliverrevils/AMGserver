@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { UserI } from 'src/auth/types/typesAuth';
 
 @Injectable()
 export class UsersService {
@@ -17,6 +18,7 @@ export class UsersService {
 
   async create(
     createUserDto: CreateUserDto,
+    userAuth: any,
   ): Promise<User | { warningMessage: string }> {
     const user = new User();
     const existingByUserName = await this.findOne({
@@ -34,7 +36,13 @@ export class UsersService {
     user.password = hashedPassword;
     user.post = createUserDto.post;
     user.structure = createUserDto.structure;
+
+    if (userAuth.role === 'admin') {
+      user.is_verificated = true;
+    }
+
     if (createUserDto.email === 'admin@admin.com') {
+      //ADMIN REG
       user.is_verificated = true;
       user.role = 'admin';
     }

@@ -70,14 +70,16 @@ export class DepartmentsService {
     id: number,
     user: any,
     createDepartmentDto: CreateDepartmentDto,
-  ): Promise<Department[] | { errorMessage: string }> {
+  ): Promise<Department | { errorMessage: string }> {
+    console.log('ID', id);
+
     if (user.role !== 'admin')
       return { errorMessage: 'Требуются права администратора' };
 
-    if (!(await this.officesService.findById(createDepartmentDto.office_id)))
-      return {
-        errorMessage: `Отделение с id: ${createDepartmentDto.office_id} не найдено`,
-      };
+    // if (!(await this.officesService.findById(createDepartmentDto.office_id)))
+    //   return {
+    //     errorMessage: `Отделение с id: ${createDepartmentDto.office_id} не найдено`,
+    //   };
 
     const department = await this.departmentModel.findOne({ where: { id } });
 
@@ -85,6 +87,6 @@ export class DepartmentsService {
 
     await department.update(createDepartmentDto);
 
-    return this.departmentModel.findAll();
+    return department;
   }
 }

@@ -78,21 +78,13 @@ export class SectionsService {
     id: number,
     createSectionDto: CreateSectionDto,
     user: any,
-  ): Promise<Section[] | { errorMessage: string }> {
+  ): Promise<Section | { errorMessage: string }> {
     if (user.role !== 'admin')
       return { errorMessage: 'Требуются права администратора' };
 
     const section = await this.sectionModel.findOne({ where: { id } });
     if (section) {
-      if (
-        (await this.officesService.findById(createSectionDto.office_id)) &&
-        (await this.departmentsService.findById(createSectionDto.department_id))
-      ) {
-        await section.update(createSectionDto);
-        return this.sectionModel.findAll();
-      } else {
-        return { errorMessage: 'Отдел либо отделение указаны не верно' };
-      }
+      return await section.update(createSectionDto);
     } else {
       return { errorMessage: `Секция с id: ${id} не найдена` };
     }
