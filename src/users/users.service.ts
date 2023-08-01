@@ -37,7 +37,7 @@ export class UsersService {
     user.post = createUserDto.post;
     user.structure = createUserDto.structure;
 
-    if (userAuth.role === 'admin') {
+    if (userAuth?.role === 'admin') {
       user.is_verificated = true;
     }
 

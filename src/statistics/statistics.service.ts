@@ -19,6 +19,7 @@ export class StatisticsService {
       return this.statisticModel.findAll({ where: { created_by: id } });
     else return { errorMessage: `Требуются права администратора` };
   }
+
   //GET ALL BY CHART ID
   async allUsersStatsByChartId(
     chart_id: number,
@@ -27,6 +28,34 @@ export class StatisticsService {
     return this.statisticModel.findAll({
       where: { chart_id, created_by: user.userId },
     });
+  }
+
+  //GET BY DATES PERIOD
+  async getPeriodByUserID(
+    dateStartBody: number,
+    dateEndBody: number,
+    userId: number,
+    chartId: number,
+  ): Promise<Array<Statistic>> {
+    console.log('CHART ID', chartId);
+    let allStats: Statistic[] = [];
+    if (+userId) {
+      //by user id
+      allStats = await this.statisticModel.findAll({
+        where: { created_by: userId, chart_id: chartId },
+      });
+    } else {
+      //all stats
+      allStats = await this.statisticModel.findAll({
+        where: { chart_id: chartId },
+      });
+    }
+
+    return allStats.filter(
+      (stat) =>
+        +stat.dateStart >= dateStartBody &&
+        +stat.dateEnd <= (dateEndBody || new Date().getTime()),
+    );
   }
 
   //CREATE

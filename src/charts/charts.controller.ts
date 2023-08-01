@@ -14,6 +14,7 @@ import {
 import { ChartsService } from './charts.service';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 import { CreateChartDto } from './dto/create-chart.dto';
+import { UserI } from 'src/auth/types/typesAuth';
 
 @Controller('charts')
 export class ChartsController {
@@ -25,11 +26,11 @@ export class ChartsController {
   paginateAndFilter(@Query() query) {
     return this.chartsServise.paginateAndFilter(query);
   }
-  @UseGuards(AuthenticatedGuard)
-  @Get('all')
-  allPatterns() {
-    return this.getAll();
-  }
+  // @UseGuards(AuthenticatedGuard)
+  // @Get('all')
+  // allPatterns() {
+  //   return this.getAll();
+  // }
 
   // FIND STAT BY ID "/charts/find/2"
   @UseGuards(AuthenticatedGuard)
@@ -54,10 +55,49 @@ export class ChartsController {
   createChart(@Body() createChartDto: CreateChartDto, @Request() { user }) {
     return this.chartsServise.createChart(createChartDto, user);
   }
+  //DELETE CHART
+  @UseGuards(AuthenticatedGuard)
+  @Get('delete/:id')
+  deleteChart(@Request() { user }: { user: UserI }, @Param('id') id: number) {
+    if (user.role == 'admin') return this.chartsServise.deleteChart(id);
+    else return { errorMessage: 'Требуются права администратора' };
+  }
+
   //GET ALL
+  @UseGuards(AuthenticatedGuard)
   @Get('all')
-  getAll() {
-    return this.chartsServise.getAllCharts();
+  getAll(@Request() { user }: { user: UserI }) {
+    if (user.role === 'admin') return this.chartsServise.getAllCharts();
+    else return { errorMessage: 'Требуются права администратора' };
+  }
+
+  //-------------------ACCESS
+
+  //ACCESSED FOR USER || ADMIN LOOK USERS CHARTS
+  @UseGuards(AuthenticatedGuard)
+  @Get('users-charts/:id')
+  usersCharts(@Request() { user }, @Param('id') id: number) {
+    return this.chartsServise.accessedChartsForUser(user, id);
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Post('add-access/:chartId')
+  addAccess(
+    @Param('chartId') chartId: number,
+    @Request() { user }: { user: UserI },
+    @Body() { userId }: { userId: number },
+  ) {
+    return this.chartsServise.addAccessForUser(user, chartId, userId);
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Post('remove-access/:chartId')
+  removeAccess(
+    @Param('chartId') chartId: number,
+    @Request() { user }: { user: UserI },
+    @Body() { userId }: { userId: number },
+  ) {
+    return this.chartsServise.removeAccessForUser(user, chartId, userId);
   }
 
   // //UPDATE CHART

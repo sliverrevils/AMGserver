@@ -12,6 +12,7 @@ import { SectionsModule } from './sections/sections.module';
 import { InfoModule } from './info/info.module';
 import { AdministratorsModule } from './administrators/administrators.module';
 import { StatisticsModule } from './statistics/statistics.module';
+import { TablesModule } from './tables/tables.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { StatisticsModule } from './statistics/statistics.module';
     InfoModule,
     AdministratorsModule,
     StatisticsModule,
+    TablesModule,
   ],
   controllers: [],
   providers: [],

@@ -11,6 +11,9 @@ export class Chart extends Model {
   @Column({ defaultValue: '[]' })
   lines: string; //Данные
 
+  @Column({ defaultValue: '[]' })
+  access: string; //Доступ [userIds]
+
   @Column({ defaultValue: null })
   descriptions: string; //Описание
 

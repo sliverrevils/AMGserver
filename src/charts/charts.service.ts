@@ -4,6 +4,7 @@ import { Chart } from './charts.model';
 import { IChartQuery } from './types';
 import { UsersService } from 'src/users/users.service';
 import { CreateChartDto } from './dto/create-chart.dto';
+import { UserI } from 'src/auth/types/typesAuth';
 
 @Injectable()
 export class ChartsService {
@@ -54,6 +55,7 @@ export class ChartsService {
     chart.name = createChartDto.name;
     chart.fields = createChartDto.fields;
     chart.lines = createChartDto.lines;
+    chart.descriptions = createChartDto.descriptions;
     chart.created_by = user.userId;
 
     return chart.save();
@@ -64,7 +66,7 @@ export class ChartsService {
     id: number,
     createChartDto: CreateChartDto,
     user,
-  ): Promise<Chart | { mesage: string }> {
+  ): Promise<Chart | { errorMessage: string }> {
     const chart = await this.findOneByStatId({ statId: id });
     if (user.role === 'admin' || chart.created_by == user.userId) {
       await this.chartModel.update(
@@ -74,7 +76,7 @@ export class ChartsService {
 
       return chart;
     } else {
-      return { mesage: 'У вас нет доступа к этой статистике ' };
+      return { errorMessage: 'У вас нет доступа к этой статистике ' };
     }
   }
   // async updateChart(id: number, delta: number): Promise<Chart> {
@@ -83,8 +85,64 @@ export class ChartsService {
   //   return chart;
   // }
 
-  async deleteChart(id: number) {
+  async deleteChart(
+    id: number,
+  ): Promise<{ message: string } | { errorMessage: string }> {
     const chart = await this.chartModel.findOne({ where: { id } });
-    await chart.destroy();
+    if (chart) {
+      await chart.destroy();
+      return { message: 'Шаблон успешно удалён' };
+    } else {
+      return { errorMessage: 'Шаблон не найден' };
+    }
+  }
+
+  //ACCESS
+  async accessedChartsForUser(
+    user: UserI,
+    id: number,
+  ): Promise<Chart[] | { errorMessage: string }> {
+    if (user.role === 'admin' || user.userId == id) {
+      const charts = await this.chartModel.findAll();
+      return charts.filter((chart) =>
+        (JSON.parse(chart.access || '[]') as number[]).some(
+          (id: number) => id == user.userId,
+        ),
+      );
+    } else {
+      return { errorMessage: 'Требуются права администратора ' };
+    }
+  }
+  //add
+  async addAccessForUser(
+    user: UserI,
+    chartId: number,
+    userId: number,
+  ): Promise<Chart | { errorMessage: string }> {
+    if (user.role === 'admin') {
+      const chart = await this.chartModel.findOne({ where: { id: chartId } });
+      const access = JSON.stringify([
+        ...new Set([...(JSON.parse(chart.access) as number[]), userId]),
+      ]);
+      return chart.update({ access });
+    } else {
+      return { errorMessage: 'Требуются права администратора ' };
+    }
+  }
+  //remove
+  async removeAccessForUser(
+    user: UserI,
+    chartId: number,
+    userId: number,
+  ): Promise<Chart | { errorMessage: string }> {
+    if (user.role === 'admin') {
+      const chart = await this.chartModel.findOne({ where: { id: chartId } });
+      const access = JSON.stringify(
+        (JSON.parse(chart.access) as number[]).filter((id) => id != userId),
+      );
+      return chart.update({ access });
+    } else {
+      return { errorMessage: 'Требуются права администратора ' };
+    }
   }
 }

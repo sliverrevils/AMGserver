@@ -64,11 +64,11 @@ export class UsersController {
   @Get('/all-users')
   @UseGuards(AuthenticatedGuard)
   getAllUsers(@Request() req) {
-    if (req.user.role === 'admin') {
-      return this.usersService.allUsers();
-    } else {
-      return { message: 'Доступно только администраторам' };
-    }
+    // if (req.user.role === 'admin') {
+    return this.usersService.allUsers();
+    // } else {
+    //   return { message: 'Доступно только администраторам' };
+    // }
   }
 
   @Post('/verificate-user')

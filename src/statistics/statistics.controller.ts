@@ -23,6 +23,21 @@ export class StatisticsController {
     return this.statisticsService.getAllbyUserID(id, user);
   }
 
+  //GET PERIOD BY USER ID
+  @UseGuards(AuthenticatedGuard)
+  @Post(`period/:id`)
+  periodByUserId(
+    @Param('id') id: number,
+    @Body() body: { dateStart: number; dateEnd: number; pattern: number },
+  ) {
+    return this.statisticsService.getPeriodByUserID(
+      body.dateStart,
+      body.dateEnd,
+      id,
+      body.pattern,
+    );
+  }
+
   //CREATE
   @UseGuards(AuthenticatedGuard)
   @Post(`create`)

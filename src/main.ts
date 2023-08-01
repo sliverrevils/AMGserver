@@ -12,10 +12,7 @@ async function bootstrap() {
       secret: 'any_secret_string',
       resave: false,
       saveUninitialized: false,
-      // proxy: true,
-      cookie: {
-        sameSite: 'none',
-      },
+      proxy: true,
     }),
   );
   app.use(passport.initialize());

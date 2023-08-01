@@ -11,6 +11,9 @@ export class CreateChartDto {
   @IsNotEmpty()
   readonly lines: string;
 
+  @IsNotEmpty()
+  readonly access: string;
+
   @ApiProperty({ example: 'about text' })
   @IsNotEmpty()
   readonly descriptions: string;

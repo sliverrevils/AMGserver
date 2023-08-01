@@ -19,7 +19,7 @@ export class InfoService {
   ) {}
 
   async fullOrg(user: any): Promise<any | { errorMessage: string }> {
-    if (user.role === 'admin') {
+    if (user.role === 'admin' || user.role === 'user') {
       const offices = await this.officesService.allOffices();
       const users = await this.usersService.allUsers();
       const charts = await this.chartsService.getAllCharts();
