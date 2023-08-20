@@ -37,6 +37,14 @@ export class StatisticsController {
       body.pattern,
     );
   }
+  //GET LAST CREATED
+  @UseGuards(AuthenticatedGuard)
+  @Get(`lastCreated`)
+  lastCreated(@Request() { user }: { user: UserI }) {
+    if (user.role === 'admin')
+      return this.statisticsService.getAllLastRecords();
+    else return { errorMessage: 'Требутся права администратора' };
+  }
 
   //CREATE
   @UseGuards(AuthenticatedGuard)
@@ -52,5 +60,29 @@ export class StatisticsController {
   @Get('stats_by_chart_id/:id')
   allUsersStatsByChartId(@Request() { user }, @Param('id') id: number) {
     return this.statisticsService.allUsersStatsByChartId(id, user);
+  }
+
+  //UPDATE
+  @UseGuards(AuthenticatedGuard)
+  @Post('update/:id')
+  updateStatistic(
+    @Request() { user },
+    @Param('id') id: number,
+    @Body() createStatisticDto: CreateStatisticDto,
+  ) {
+    return this.statisticsService.updateStatistic(user, id, createStatisticDto);
+  }
+  //DELETE
+  @UseGuards(AuthenticatedGuard)
+  @Get('delete/:id')
+  deleteStatistic(@Request() { user }, @Param('id') id: number) {
+    return this.statisticsService.deleteStatistic(user, id);
+  }
+
+  //DELETE ALL BY CHART ID
+  @UseGuards(AuthenticatedGuard)
+  @Get('deleteall_by_chart_id/:id')
+  deleteAllByChartId(@Request() { user }, @Param('id') chart_id: number) {
+    return this.statisticsService.deleteAllByChartId(user, chart_id);
   }
 }

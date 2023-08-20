@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { TableView } from './tables.model';
 import { UserI } from 'src/auth/types/typesAuth';
 import { CreateTableDto } from './dto/create-table.dto';
+import { where } from 'sequelize';
 
 @Injectable()
 export class TablesService {
@@ -16,6 +17,9 @@ export class TablesService {
     user: UserI,
     createTableDto: CreateTableDto,
   ): Promise<TableView[] | { errorMessage: string }> {
+    if (user.role !== 'admin') {
+      return { errorMessage: 'Требуются права администратора' };
+    }
     const table = new TableView();
     table.name = createTableDto.name;
     table.view_pattern_id = createTableDto.view_pattern_id;
@@ -26,5 +30,19 @@ export class TablesService {
     return this.tableModel.findAll({
       where: { view_pattern_id: createTableDto.view_pattern_id },
     });
+  }
+
+  async deleteTable(
+    user: UserI,
+    id: number,
+    view_pattern_id: number,
+  ): Promise<TableView[] | { errorMessage: string }> {
+    if (user.role === 'admin') {
+      const table = await this.tableModel.findOne({ where: { id } });
+      table.destroy();
+      return this.tableModel.findAll({ where: { view_pattern_id } });
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
   }
 }

@@ -50,12 +50,15 @@ export class StatisticsService {
         where: { chart_id: chartId },
       });
     }
+    console.log('DATE ⏲️', dateStartBody, dateEndBody);
+    return allStats
+      .filter((stat) => +stat.dateStart >= dateStartBody)
+      .filter((stat) => (dateEndBody ? +stat.dateEnd <= dateEndBody : true));
+  }
 
-    return allStats.filter(
-      (stat) =>
-        +stat.dateStart >= dateStartBody &&
-        +stat.dateEnd <= (dateEndBody || new Date().getTime()),
-    );
+  //GET LAST RECORDS
+  async getAllLastRecords(): Promise<Statistic[]> {
+    return this.statisticModel.findAll();
   }
 
   //CREATE
@@ -76,5 +79,50 @@ export class StatisticsService {
 
       return statistic.save();
     } else return { errorMessage: `Требуются права администратора` };
+  }
+
+  //UPDATE
+  async updateStatistic(
+    user: UserI,
+    id: number,
+    createStatisticDto: CreateStatisticDto,
+  ): Promise<Statistic | { errorMessage: string }> {
+    const currentStat = await this.statisticModel.findOne({ where: { id } });
+    if (user.role === 'admin' || user.userId == currentStat.created_by) {
+      return await currentStat.update({
+        ...createStatisticDto,
+        updated_by: user.userId,
+      });
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+  }
+
+  //DELETE
+  async deleteStatistic(
+    user: UserI,
+    id: number,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    const currentStat = await this.statisticModel.findOne({ where: { id } });
+    if (user.role === 'admin' || user.userId == currentStat.created_by) {
+      const deleted = await currentStat.destroy();
+      console.log('DELETED', deleted);
+      return { message: `Запись статистики с была удалена` };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+  }
+  //DELETE ALL BT CHART ID
+  async deleteAllByChartId(
+    user: UserI,
+    chart_id: number,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role === 'admin') {
+      await this.statisticModel.destroy({ where: { chart_id } });
+
+      return { message: `Все записи по шаблону с ID:${chart_id} были удалены` };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
   }
 }
