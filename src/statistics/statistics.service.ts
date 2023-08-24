@@ -56,9 +56,30 @@ export class StatisticsService {
       .filter((stat) => (dateEndBody ? +stat.dateEnd <= dateEndBody : true));
   }
 
-  //GET LAST RECORDS
-  async getAllLastRecords(): Promise<Statistic[]> {
-    return this.statisticModel.findAll();
+  //GET ALL BY PERIOD
+  async getAllLastRecords(
+    dateStart: number,
+    dateEnd: number,
+  ): Promise<Statistic[]> {
+    let allStats = await this.statisticModel.findAll();
+
+    if (dateStart) {
+      allStats = [
+        ...allStats.filter(
+          (stat) => new Date(stat.createdAt).getTime() >= dateStart,
+        ),
+      ];
+    }
+
+    if (dateEnd) {
+      allStats = [
+        ...allStats.filter(
+          (stat) => new Date(stat.createdAt).getTime() <= dateEnd,
+        ),
+      ];
+    }
+
+    return allStats;
   }
 
   //CREATE

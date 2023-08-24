@@ -37,12 +37,18 @@ export class StatisticsController {
       body.pattern,
     );
   }
-  //GET LAST CREATED
+  //GET ALL BY PERIOD
   @UseGuards(AuthenticatedGuard)
-  @Get(`lastCreated`)
-  lastCreated(@Request() { user }: { user: UserI }) {
+  @Post(`allByPeriod`)
+  lastCreated(
+    @Request() { user }: { user: UserI },
+    @Body() body: { dateStart: number; dateEnd: number },
+  ) {
     if (user.role === 'admin')
-      return this.statisticsService.getAllLastRecords();
+      return this.statisticsService.getAllLastRecords(
+        body.dateStart,
+        body.dateEnd,
+      );
     else return { errorMessage: 'Требутся права администратора' };
   }
 
