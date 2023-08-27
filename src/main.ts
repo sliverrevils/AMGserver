@@ -24,6 +24,7 @@ async function bootstrap() {
       'http://localhost:8080',
       'https://am-gclient.vercel.app',
       'https://amgclient-production.up.railway.app',
+      'http://79.141.77.176:8090/',
     ],
   });
 
