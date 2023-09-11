@@ -13,4 +13,7 @@ export class TableView extends Model {
 
   @Column
   columns: string;
+
+  @Column
+  costumLines: string;
 }

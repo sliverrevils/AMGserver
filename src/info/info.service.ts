@@ -95,7 +95,11 @@ export class InfoService {
           ),
         })),
       );
-      return { charts, users, org: officesWithDepartmentsAndSectionsAndAdmins };
+      return {
+        patterns: charts,
+        users,
+        offices: officesWithDepartmentsAndSectionsAndAdmins,
+      };
     } else {
       return { errorMessage: 'Требуются права администратора' };
     }

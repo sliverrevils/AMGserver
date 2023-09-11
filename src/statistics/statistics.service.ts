@@ -125,6 +125,7 @@ export class StatisticsService {
     id: number,
   ): Promise<{ message: string } | { errorMessage: string }> {
     const currentStat = await this.statisticModel.findOne({ where: { id } });
+    console.log('CURRENT STAT', currentStat);
     if (user.role === 'admin' || user.userId == currentStat.created_by) {
       const deleted = await currentStat.destroy();
       console.log('DELETED', deleted);

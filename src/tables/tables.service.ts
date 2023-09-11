@@ -23,6 +23,7 @@ export class TablesService {
     const table = new TableView();
     table.name = createTableDto.name;
     table.view_pattern_id = createTableDto.view_pattern_id;
+    table.costumLines = createTableDto.costumLines;
     table.created_by = user.userId;
     table.columns = createTableDto.columns;
 

@@ -9,4 +9,7 @@ export class CreateTableDto {
 
   @IsNotEmpty()
   readonly columns: string;
+
+  @IsNotEmpty()
+  readonly costumLines: string;
 }
