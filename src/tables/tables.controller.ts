@@ -11,6 +11,7 @@ import { TablesService } from './tables.service';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UserI } from 'src/auth/types/typesAuth';
+import { UpdateTableDto } from './dto/update-table.dto';
 
 @Controller('tables')
 export class TablesController {
@@ -26,6 +27,15 @@ export class TablesController {
   @Post(`create`)
   createTable(@Body() createTableDto: CreateTableDto, @Request() { user }) {
     return this.tablesService.createTable(user, createTableDto);
+  }
+  @UseGuards(AuthenticatedGuard)
+  @Post(`update/:id`)
+  updateTable(
+    @Body() updateTableDto: UpdateTableDto,
+    @Request() { user },
+    @Param('id') id: number,
+  ) {
+    return this.tablesService.updateTable(user, id, updateTableDto);
   }
 
   @UseGuards(AuthenticatedGuard)

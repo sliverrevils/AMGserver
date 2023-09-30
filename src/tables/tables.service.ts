@@ -4,6 +4,7 @@ import { TableView } from './tables.model';
 import { UserI } from 'src/auth/types/typesAuth';
 import { CreateTableDto } from './dto/create-table.dto';
 import { where } from 'sequelize';
+import { UpdateTableDto } from './dto/update-table.dto';
 
 @Injectable()
 export class TablesService {
@@ -42,6 +43,22 @@ export class TablesService {
       const table = await this.tableModel.findOne({ where: { id } });
       table.destroy();
       return this.tableModel.findAll({ where: { view_pattern_id } });
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+  }
+
+  async updateTable(
+    user: UserI,
+    tabelId: number,
+    updateTableDto: UpdateTableDto,
+  ): Promise<TableView[] | { errorMessage: string }> {
+    if (user.role === 'admin') {
+      const table = await this.tableModel.findOne({ where: { id: tabelId } });
+      await table.update(updateTableDto);
+      return this.tableModel.findAll({
+        where: { view_pattern_id: table.view_pattern_id },
+      });
     } else {
       return { errorMessage: 'Требуются права администратора' };
     }
