@@ -3,13 +3,15 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Office } from './offices.model';
 import { CreateOfficeDto } from './dto/create-office.dto';
 import { UsersService } from 'src/users/users.service';
+import { UserI } from 'src/auth/types/typesAuth';
+import { DepartmentsService } from 'src/departments/departments.service';
 
 @Injectable()
 export class OfficesService {
   constructor(
     @InjectModel(Office)
     private officeModel: typeof Office,
-    private readonly usersService: UsersService,
+    private readonly usersService: UsersService, //  private readonly departmentService: DepartmentsService,
   ) {}
 
   async allOffices(): Promise<Office[]> {
@@ -73,5 +75,61 @@ export class OfficesService {
     if (!office) return { errorMessage: `Отделение с id: ${id} не найдено` };
     await office.destroy();
     return this.officeModel.findAll();
+  }
+
+  //PATTERNS
+  //add main pattern
+  async addMainPattern(
+    section_id: number,
+    pattern_id: number,
+    user: UserI,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role == 'admin') {
+      const section = await this.officeModel.findOne({
+        where: { id: section_id },
+      });
+      section.update({ mainPattern: pattern_id });
+      return { message: 'Главный шаблон успешно изменён' };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+  }
+  //add patern
+  async addPattern(
+    section_id: number,
+    pattern_id: number,
+    user: UserI,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role == 'admin') {
+      const section = await this.officeModel.findOne({
+        where: { id: section_id },
+      });
+      const patterns = JSON.stringify([
+        ...new Set([...JSON.parse(section.patterns), pattern_id]),
+      ]);
+      section.update({ patterns });
+      return { message: 'Дополнительный шаблон успешно добавлен' };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+  }
+  //del pattern
+  async delPattern(
+    section_id: number,
+    pattern_id: number,
+    user: UserI,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role == 'admin') {
+      const section = await this.officeModel.findOne({
+        where: { id: section_id },
+      });
+      const patterns = JSON.stringify(
+        JSON.parse(section.patterns).filter((id) => id != pattern_id),
+      );
+      section.update({ patterns });
+      return { message: 'Дополнительный шаблон успешно удален' };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
   }
 }

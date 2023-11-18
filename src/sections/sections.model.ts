@@ -22,4 +22,11 @@ export class Section extends Model {
 
   @Column
   descriptions: string;
+
+  //PATTERNS
+  @Column
+  mainPattern: number;
+
+  @Column({ defaultValue: '[]' })
+  patterns: string;
 }

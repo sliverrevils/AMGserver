@@ -24,14 +24,26 @@ export class InfoService {
       const users = await this.usersService.allUsers();
       const charts = await this.chartsService.getAllCharts();
       const officesWithDepartments = await Promise.all(
-        offices.map(async ({ id, name, leadership, descriptions, ckp }) => ({
-          id,
-          name,
-          leadership,
-          descriptions,
-          ckp,
-          departments: await this.departmentsService.findByOfficeId(id),
-        })),
+        offices.map(
+          async ({
+            id,
+            name,
+            leadership,
+            descriptions,
+            ckp,
+            mainPattern,
+            patterns,
+          }) => ({
+            id,
+            name,
+            leadership,
+            descriptions,
+            ckp,
+            mainPattern,
+            patterns: JSON.parse(patterns),
+            departments: await this.departmentsService.findByOfficeId(id),
+          }),
+        ),
       );
 
       const officesWithDepartmentsAndSections = await Promise.all(
@@ -47,6 +59,8 @@ export class InfoService {
                 leadership,
                 descriptions,
                 ckp,
+                mainPattern,
+                patterns,
               }) => ({
                 id,
                 office_id,
@@ -55,6 +69,8 @@ export class InfoService {
                 leadership,
                 descriptions,
                 ckp,
+                mainPattern,
+                patterns: JSON.parse(patterns),
                 sections: await this.sectionsService.findByDepartmentId(id),
               }),
             ),
@@ -78,12 +94,16 @@ export class InfoService {
                     ckp,
                     descriptions,
                     leadership,
+                    mainPattern,
+                    patterns,
                   }) => ({
                     id,
                     office_id,
                     department_id,
                     name,
                     ckp,
+                    mainPattern,
+                    patterns: JSON.parse(patterns),
                     descriptions,
                     leadership,
                     administrators:
@@ -95,10 +115,48 @@ export class InfoService {
           ),
         })),
       );
+
+      // const patternAccesses = officesWithDepartmentsAndSectionsAndAdmins.reduce(
+      //   (acc, office, idx) => {
+      //     const addPatterns = (currentPatterns: number[], patterns: number[]) => [...new Set([...currentPatterns, ...patterns])];
+      //     const officePatterns = addPatterns([office.mainPattern], office.patterns).filter(pat => !!pat);
+      //     if (office.leadership) {
+      //       acc[office.leadership] = addPatterns(officePatterns, acc[office.leadership] || [])
+      //     }
+      //     office.departments.forEach(department => {
+      //       const departmentPatterns = addPatterns([department.mainPattern], department.patterns).filter(pat => !!pat);
+      //       if (department.leadership) {
+      //         acc[department.leadership] = addPatterns(acc[department.leadership] || [], departmentPatterns)
+      //       }
+      //       if (office.leadership) {
+      //         acc[office.leadership] = addPatterns(departmentPatterns, acc[office.leadership] || [])
+      //       }
+
+      //       department.sections.forEach(section => {
+      //         const sectionPatterns = addPatterns([section.mainPattern], section.patterns).filter(pat => !!pat);
+
+      //         if (department.leadership) {
+      //           acc[department.leadership] = addPatterns(acc[department.leadership] || [], sectionPatterns)
+      //         }
+      //         if (office.leadership) {
+      //           acc[office.leadership] = addPatterns(sectionPatterns, acc[office.leadership] || [])
+      //         }
+      //         if (section.leadership) {
+      //           acc[section.leadership] = addPatterns(sectionPatterns, acc[section.leadership] || [])
+      //         }
+
+      //       })
+
+      //     })
+      //     return acc;
+      //   },
+      //   {},
+      // );
       return {
         patterns: charts,
         users,
         offices: officesWithDepartmentsAndSectionsAndAdmins,
+        //patternAccesses,
       };
     } else {
       return { errorMessage: 'Требуются права администратора' };

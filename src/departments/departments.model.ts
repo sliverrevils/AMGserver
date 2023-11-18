@@ -21,6 +21,10 @@ export class Department extends Model {
   @Column
   descriptions: string;
 
-  // @Column
-  // sections: any;
+  //PATTERNS
+  @Column
+  mainPattern: number;
+
+  @Column({ defaultValue: '[]' })
+  patterns: string;
 }

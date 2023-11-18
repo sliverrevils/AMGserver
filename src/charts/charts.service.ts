@@ -5,6 +5,7 @@ import { IChartQuery } from './types';
 import { UsersService } from 'src/users/users.service';
 import { CreateChartDto } from './dto/create-chart.dto';
 import { UserI } from 'src/auth/types/typesAuth';
+import { where } from 'sequelize';
 
 @Injectable()
 export class ChartsService {
@@ -84,6 +85,18 @@ export class ChartsService {
   //   const chart = this.findOneByStatId({ statId: id });
   //   return chart;
   // }
+
+  async updateInfo(id: number, info: string): Promise<any[]> {
+    console.log('REQ', id, info);
+    const res = await this.chartModel.update(
+      { descriptions: info },
+      { where: { id } },
+    );
+
+    console.log('RES', res);
+    const allPatterns = await this.chartModel.findAll();
+    return allPatterns;
+  }
 
   async deleteChart(
     id: number,

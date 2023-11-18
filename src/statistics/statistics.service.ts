@@ -42,7 +42,7 @@ export class StatisticsService {
     if (+userId) {
       //by user id
       allStats = await this.statisticModel.findAll({
-        where: { created_by: userId, chart_id: chartId },
+        where: { chart_id: chartId },
       });
     } else {
       //all stats
@@ -109,14 +109,14 @@ export class StatisticsService {
     createStatisticDto: CreateStatisticDto,
   ): Promise<Statistic | { errorMessage: string }> {
     const currentStat = await this.statisticModel.findOne({ where: { id } });
-    if (user.role === 'admin' || user.userId == currentStat.created_by) {
-      return await currentStat.update({
-        ...createStatisticDto,
-        updated_by: user.userId,
-      });
-    } else {
-      return { errorMessage: 'Требуются права администратора' };
-    }
+    // if (user.role === 'admin' || user.userId == currentStat.created_by) {
+    return await currentStat.update({
+      ...createStatisticDto,
+      updated_by: user.userId,
+    });
+    // } else {
+    //   return { errorMessage: 'Требуются права администратора' };
+    // }
   }
 
   //DELETE
@@ -126,13 +126,13 @@ export class StatisticsService {
   ): Promise<{ message: string } | { errorMessage: string }> {
     const currentStat = await this.statisticModel.findOne({ where: { id } });
     console.log('CURRENT STAT', currentStat);
-    if (user.role === 'admin' || user.userId == currentStat.created_by) {
-      const deleted = await currentStat.destroy();
-      console.log('DELETED', deleted);
-      return { message: `Запись статистики с была удалена` };
-    } else {
-      return { errorMessage: 'Требуются права администратора' };
-    }
+    // if (user.role === 'admin' || user.userId == currentStat.created_by) {
+    const deleted = await currentStat.destroy();
+    console.log('DELETED', deleted);
+    return { message: `Запись статистики с была удалена` };
+    // } else {
+    //   return { errorMessage: 'Требуются права администратора' };
+    // }
   }
   //DELETE ALL BT CHART ID
   async deleteAllByChartId(

@@ -4,6 +4,7 @@ import { Department } from './departments.model';
 import { UsersService } from 'src/users/users.service';
 import { OfficesService } from 'src/offices/offices.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
+import { UserI } from 'src/auth/types/typesAuth';
 
 @Injectable()
 export class DepartmentsService {
@@ -88,5 +89,61 @@ export class DepartmentsService {
     await department.update(createDepartmentDto);
 
     return department;
+  }
+
+  //PATTERNS
+  //add main pattern
+  async addMainPattern(
+    section_id: number,
+    pattern_id: number,
+    user: UserI,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role == 'admin') {
+      const section = await this.departmentModel.findOne({
+        where: { id: section_id },
+      });
+      section.update({ mainPattern: pattern_id });
+      return { message: 'Главный шаблон успешно изменён' };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+  }
+  //add patern
+  async addPattern(
+    section_id: number,
+    pattern_id: number,
+    user: UserI,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role == 'admin') {
+      const section = await this.departmentModel.findOne({
+        where: { id: section_id },
+      });
+      const patterns = JSON.stringify([
+        ...new Set([...JSON.parse(section.patterns), pattern_id]),
+      ]);
+      section.update({ patterns });
+      return { message: 'Дополнительный шаблон успешно добавлен' };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+  }
+  //del pattern
+  async delPattern(
+    section_id: number,
+    pattern_id: number,
+    user: UserI,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role == 'admin') {
+      const section = await this.departmentModel.findOne({
+        where: { id: section_id },
+      });
+      const patterns = JSON.stringify(
+        JSON.parse(section.patterns).filter((id) => id != pattern_id),
+      );
+      section.update({ patterns });
+      return { message: 'Дополнительный шаблон успешно удален' };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
   }
 }

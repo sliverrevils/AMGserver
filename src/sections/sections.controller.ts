@@ -61,4 +61,35 @@ export class SectionsController {
       user,
     );
   }
+  //PATTERNS
+  //ADD MAIN PATTERN
+  @UseGuards(AuthenticatedGuard)
+  @Post('addMainPattern')
+  addMainPattern(
+    @Body()
+    { section_id, pattern_id }: { section_id: number; pattern_id: number },
+    @Request() { user },
+  ) {
+    return this.sectionsService.addMainPattern(section_id, pattern_id, user);
+  }
+  //ADD PATTERN
+  @UseGuards(AuthenticatedGuard)
+  @Post('addPattern')
+  addPattern(
+    @Body()
+    { section_id, pattern_id }: { section_id: number; pattern_id: number },
+    @Request() { user },
+  ) {
+    return this.sectionsService.addPattern(section_id, pattern_id, user);
+  }
+  //DEL PATTERN
+  @UseGuards(AuthenticatedGuard)
+  @Post('delPattern')
+  delPattern(
+    @Body()
+    { section_id, pattern_id }: { section_id: number; pattern_id: number },
+    @Request() { user },
+  ) {
+    return this.sectionsService.delPattern(section_id, pattern_id, user);
+  }
 }

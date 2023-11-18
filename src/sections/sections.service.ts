@@ -6,6 +6,8 @@ import { OfficesService } from 'src/offices/offices.service';
 import { DepartmentsService } from 'src/departments/departments.service';
 import { CreateSectionDto } from './dto/create-section.dto';
 import { AddAdministratorDto } from './dto/add-administrator.dto';
+import { UserI } from 'src/auth/types/typesAuth';
+import { where } from 'sequelize';
 
 @Injectable()
 export class SectionsService {
@@ -121,6 +123,62 @@ export class SectionsService {
       }
     } else {
       return { errorMessage: `Секция с id: ${id} не найдена` };
+    }
+  }
+
+  //PATTERNS
+  //add main pattern
+  async addMainPattern(
+    section_id: number,
+    pattern_id: number,
+    user: UserI,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role == 'admin') {
+      const section = await this.sectionModel.findOne({
+        where: { id: section_id },
+      });
+      section.update({ mainPattern: pattern_id });
+      return { message: 'Главный шаблон успешно изменён' };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+  }
+  //add patern
+  async addPattern(
+    section_id: number,
+    pattern_id: number,
+    user: UserI,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role == 'admin') {
+      const section = await this.sectionModel.findOne({
+        where: { id: section_id },
+      });
+      const patterns = JSON.stringify([
+        ...new Set([...JSON.parse(section.patterns), pattern_id]),
+      ]);
+      section.update({ patterns });
+      return { message: 'Дополнительный шаблон успешно добавлен' };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+  }
+  //del pattern
+  async delPattern(
+    section_id: number,
+    pattern_id: number,
+    user: UserI,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role == 'admin') {
+      const section = await this.sectionModel.findOne({
+        where: { id: section_id },
+      });
+      const patterns = JSON.stringify(
+        JSON.parse(section.patterns).filter((id) => id != pattern_id),
+      );
+      section.update({ patterns });
+      return { message: 'Дополнительный шаблон успешно удален' };
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
     }
   }
 }

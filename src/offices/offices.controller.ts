@@ -42,4 +42,36 @@ export class OfficesController {
   deleteOffice(@Param('id') id: string, @Request() { user }) {
     return this.officesService.deleteOffice(+id, user);
   }
+
+  //PATTERNS
+  //ADD MAIN PATTERN
+  @UseGuards(AuthenticatedGuard)
+  @Post('addMainPattern')
+  addMainPattern(
+    @Body()
+    { section_id, pattern_id }: { section_id: number; pattern_id: number },
+    @Request() { user },
+  ) {
+    return this.officesService.addMainPattern(section_id, pattern_id, user);
+  }
+  //ADD PATTERN
+  @UseGuards(AuthenticatedGuard)
+  @Post('addPattern')
+  addPattern(
+    @Body()
+    { section_id, pattern_id }: { section_id: number; pattern_id: number },
+    @Request() { user },
+  ) {
+    return this.officesService.addPattern(section_id, pattern_id, user);
+  }
+  //DEL PATTERN
+  @UseGuards(AuthenticatedGuard)
+  @Post('delPattern')
+  delPattern(
+    @Body()
+    { section_id, pattern_id }: { section_id: number; pattern_id: number },
+    @Request() { user },
+  ) {
+    return this.officesService.delPattern(section_id, pattern_id, user);
+  }
 }

@@ -13,4 +13,11 @@ export class Office extends Model {
 
   @Column({ defaultValue: null })
   descriptions: string; // ОПИСАНИЕ
+
+  //PATTERNS
+  @Column
+  mainPattern: number;
+
+  @Column({ defaultValue: '[]' })
+  patterns: string;
 }

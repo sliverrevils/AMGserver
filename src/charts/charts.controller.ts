@@ -71,6 +71,18 @@ export class ChartsController {
     else return { errorMessage: 'Требуются права администратора' };
   }
 
+  //UPDATE CHART
+  @UseGuards(AuthenticatedGuard)
+  @Post('updateInfo/:id')
+  updateInfo(
+    @Request() { user }: { user: UserI },
+    @Body() { info }: { info: string },
+    @Param('id') id: number,
+  ) {
+    if (user.role === 'admin') return this.chartsServise.updateInfo(id, info);
+    else return { errorMessage: 'Требуются права администратора' };
+  }
+
   //-------------------ACCESS
 
   //ACCESSED FOR USER || ADMIN LOOK USERS CHARTS
