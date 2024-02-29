@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { where } from 'sequelize';
 import { AdministratorsService } from 'src/administrators/administrators.service';
 import { Chart } from 'src/charts/charts.model';
 import { ChartsService } from 'src/charts/charts.service';
 import { DepartmentsService } from 'src/departments/departments.service';
 import { OfficesService } from 'src/offices/offices.service';
+import { PatternsService } from 'src/patterns/patterns.service';
 import { SectionsService } from 'src/sections/sections.service';
+import { TableStatisticsService } from 'src/table-statistics/table-statistics.service';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -16,6 +19,8 @@ export class InfoService {
     private readonly sectionsService: SectionsService,
     private readonly administratorsService: AdministratorsService,
     private readonly chartsService: ChartsService,
+    private readonly patternsService: PatternsService,
+    private readonly tableStatisticsService: TableStatisticsService,
   ) {}
 
   async fullOrg(user: any): Promise<any | { errorMessage: string }> {
@@ -23,6 +28,7 @@ export class InfoService {
       const offices = await this.officesService.allOffices();
       const users = await this.usersService.allUsers();
       const charts = await this.chartsService.getAllCharts();
+      const tablePatterns = await this.patternsService.getAllPatterns();
       const officesWithDepartments = await Promise.all(
         offices.map(
           async ({
@@ -115,48 +121,14 @@ export class InfoService {
           ),
         })),
       );
-
-      // const patternAccesses = officesWithDepartmentsAndSectionsAndAdmins.reduce(
-      //   (acc, office, idx) => {
-      //     const addPatterns = (currentPatterns: number[], patterns: number[]) => [...new Set([...currentPatterns, ...patterns])];
-      //     const officePatterns = addPatterns([office.mainPattern], office.patterns).filter(pat => !!pat);
-      //     if (office.leadership) {
-      //       acc[office.leadership] = addPatterns(officePatterns, acc[office.leadership] || [])
-      //     }
-      //     office.departments.forEach(department => {
-      //       const departmentPatterns = addPatterns([department.mainPattern], department.patterns).filter(pat => !!pat);
-      //       if (department.leadership) {
-      //         acc[department.leadership] = addPatterns(acc[department.leadership] || [], departmentPatterns)
-      //       }
-      //       if (office.leadership) {
-      //         acc[office.leadership] = addPatterns(departmentPatterns, acc[office.leadership] || [])
-      //       }
-
-      //       department.sections.forEach(section => {
-      //         const sectionPatterns = addPatterns([section.mainPattern], section.patterns).filter(pat => !!pat);
-
-      //         if (department.leadership) {
-      //           acc[department.leadership] = addPatterns(acc[department.leadership] || [], sectionPatterns)
-      //         }
-      //         if (office.leadership) {
-      //           acc[office.leadership] = addPatterns(sectionPatterns, acc[office.leadership] || [])
-      //         }
-      //         if (section.leadership) {
-      //           acc[section.leadership] = addPatterns(sectionPatterns, acc[section.leadership] || [])
-      //         }
-
-      //       })
-
-      //     })
-      //     return acc;
-      //   },
-      //   {},
-      // );
       return {
         patterns: charts,
         users,
         offices: officesWithDepartmentsAndSectionsAndAdmins,
-        //patternAccesses,
+        tablePatterns,
+        tableStatistics: (await this.tableStatisticsService.getAll()).map(
+          (table) => ({ ...table, dateColumn: JSON.parse(table.dateColumn) }),
+        ),
       };
     } else {
       return { errorMessage: 'Требуются права администратора' };
@@ -183,5 +155,21 @@ export class InfoService {
       return patternsArr.filter((el) => el);
     }
     return [];
+  }
+
+  //RAPORT LIST
+  async getRaportList(statIdArr: number[]): Promise<any[]> {
+    let parsedRepArr: any[] = [];
+    if (statIdArr.length) {
+      const allStats = await this.tableStatisticsService.getAll();
+      const repArr = allStats.filter(({ id }) => statIdArr.includes(id));
+      if (repArr.length) {
+        parsedRepArr = repArr.map((stat) => ({
+          ...stat,
+          dateColumn: JSON.parse(stat.dateColumn),
+        }));
+      }
+    }
+    return parsedRepArr;
   }
 }

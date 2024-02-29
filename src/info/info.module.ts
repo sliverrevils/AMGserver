@@ -7,6 +7,8 @@ import { DepartmentsModule } from 'src/departments/departments.module';
 import { SectionsModule } from 'src/sections/sections.module';
 import { AdministratorsModule } from 'src/administrators/administrators.module';
 import { ChartsModule } from 'src/charts/charts.module';
+import { PatternsModule } from 'src/patterns/patterns.module';
+import { TableStatisticsModule } from 'src/table-statistics/table-statistics.module';
 
 @Module({
   controllers: [InfoController],
@@ -18,6 +20,8 @@ import { ChartsModule } from 'src/charts/charts.module';
     SectionsModule,
     AdministratorsModule,
     ChartsModule,
+    PatternsModule,
+    TableStatisticsModule,
   ],
   exports: [InfoService],
 })

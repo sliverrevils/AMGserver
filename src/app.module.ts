@@ -13,6 +13,9 @@ import { InfoModule } from './info/info.module';
 import { AdministratorsModule } from './administrators/administrators.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { TablesModule } from './tables/tables.module';
+import { PatternsModule } from './patterns/patterns.module';
+import { TableStatisticsModule } from './table-statistics/table-statistics.module';
+import { ChartsListModule } from './charts-list/charts-list.module';
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { TablesModule } from './tables/tables.module';
     AdministratorsModule,
     StatisticsModule,
     TablesModule,
+    PatternsModule,
+    TableStatisticsModule,
+    ChartsListModule,
   ],
   controllers: [],
   providers: [],
