@@ -22,9 +22,7 @@ async function bootstrap() {
     exposedHeaders: ['set-cookie'], //---!!! ???
     origin: [
       'http://localhost:8080',
-      'https://am-gclient.vercel.app',
-      'https://amgclient-production.up.railway.app',
-      'http://79.141.77.176:8090',
+      'http://195.133.199.147:8090', // - AMG server
       'http://109.254.30.82:8090',
     ],
   });
