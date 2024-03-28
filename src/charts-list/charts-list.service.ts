@@ -58,4 +58,29 @@ export class ChartsListService {
       where: { userId: user.userId },
     });
   }
+
+  async chartToUser(
+    user: UserI,
+    chartId: number,
+    userId: number,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role == 'admin') {
+      const chart = await this.chartListModel.findOne({
+        where: { id: chartId },
+      });
+      if (chart) {
+        const chartList = new ChartList();
+        chartList.userId = userId;
+        chartList.name = chart.name + `-[admin]`;
+        chartList.charts = chart.charts;
+        chartList.descriptions = chart.descriptions;
+        await chartList.save();
+        return { message: 'Граффик лист успешно добавлен пользователю' };
+      } else {
+        return { errorMessage: 'Лист не найден' };
+      }
+    } else {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+  }
 }

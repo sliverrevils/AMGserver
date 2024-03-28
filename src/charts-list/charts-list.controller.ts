@@ -58,4 +58,14 @@ export class ChartsListController {
       descriptions,
     );
   }
+
+  //CHART TO USER
+  @UseGuards(AuthenticatedGuard)
+  @Post('to-user')
+  chartToUser(
+    @Request() { user },
+    @Body() { chartId, userId }: { chartId: number; userId: number },
+  ) {
+    this.chartsListService.chartToUser(user, chartId, userId);
+  }
 }
