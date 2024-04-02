@@ -90,4 +90,13 @@ export class UsersController {
       return { message: 'Доступно только администраторам' };
     }
   }
+
+  @Post('/update')
+  @UseGuards(AuthenticatedGuard)
+  updateProfile(
+    @Request() { user },
+    @Body() { id, name, login }: { id: string; name: string; login: string },
+  ) {
+    return this.usersService.updateUser(user, id, name, login);
+  }
 }

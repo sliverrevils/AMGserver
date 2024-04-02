@@ -82,4 +82,20 @@ export class UsersService {
       return { message: `пользователь с id:${id} не найден` };
     }
   }
+
+  async updateUser(
+    user,
+    id: string,
+    name: string,
+    login: string,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role !== 'admin') {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+    const currentUser = await this.userModel.findOne({ where: { id } });
+    currentUser.name = name;
+    currentUser.email = login;
+    await currentUser.save();
+    return { message: 'Данные пользователя обновлены' };
+  }
 }
