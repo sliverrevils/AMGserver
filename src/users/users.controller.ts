@@ -99,4 +99,13 @@ export class UsersController {
   ) {
     return this.usersService.updateUser(user, id, name, login);
   }
+
+  @Post('/change-pass')
+  @UseGuards(AuthenticatedGuard)
+  changePassProfile(
+    @Request() { user },
+    @Body() { id, password }: { id: number; password: string },
+  ) {
+    return this.usersService.changePassUser(user, id, password);
+  }
 }

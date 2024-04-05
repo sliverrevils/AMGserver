@@ -98,4 +98,18 @@ export class UsersService {
     await currentUser.save();
     return { message: 'Данные пользователя обновлены' };
   }
+
+  async changePassUser(
+    user: UserI,
+    id: number,
+    password: string,
+  ): Promise<{ message: string } | { errorMessage: string }> {
+    if (user.role !== 'admin' && user.userId != id) {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+    const currentUser = await this.userModel.findOne({ where: { id } });
+    currentUser.password = await bcrypt.hash(password, 10);
+    await currentUser.save();
+    return { message: `Пароль был успешно изменен !` };
+  }
 }
