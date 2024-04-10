@@ -51,7 +51,20 @@ export class UsersService {
   }
 
   async allUsers(): Promise<User[]> {
-    return this.userModel.findAll();
+    const replaceFio = (nameStr: string): string => {
+      if (nameStr == 'admin@admin.com') return nameStr;
+      if (nameStr.length) {
+        const names = nameStr.split(' ').filter((str) => !!str);
+        const newName = `${names[2]} ${names[0]} ${names[1]}`;
+        //console.log(names, newName);
+        return newName;
+      } else {
+        return 'unnamed';
+      }
+    };
+    const users = await this.userModel.findAll();
+    users.sort((a, b) => replaceFio(a.name).localeCompare(replaceFio(b.name)));
+    return users;
   }
 
   async verificateUser(id: string): Promise<{ message: string }> {
