@@ -16,6 +16,12 @@ export class UsersService {
     return this.userModel.findOne({ ...filter });
   }
 
+  async deleteUser(id: number): Promise<{ message: string }> {
+    const user = await this.userModel.findOne({ where: { id } });
+    await user.destroy();
+    return { message: 'Пользователь удален !' };
+  }
+
   async create(
     createUserDto: CreateUserDto,
     userAuth: any,

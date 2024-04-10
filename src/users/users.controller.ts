@@ -8,6 +8,7 @@ import {
   Post,
   Request,
   UseGuards,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -107,5 +108,15 @@ export class UsersController {
     @Body() { id, password }: { id: number; password: string },
   ) {
     return this.usersService.changePassUser(user, id, password);
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Get('delete/:id')
+  deleteUser(@Param('id') id: number, @Request() { user }) {
+    if (user.role !== 'admin') {
+      return { errorMessage: 'Требуются права администратора' };
+    }
+
+    return this.usersService.deleteUser(id);
   }
 }
