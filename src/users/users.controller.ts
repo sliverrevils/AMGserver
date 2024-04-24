@@ -105,9 +105,14 @@ export class UsersController {
   @UseGuards(AuthenticatedGuard)
   changePassProfile(
     @Request() { user },
-    @Body() { id, password }: { id: number; password: string },
+    @Body()
+    {
+      id,
+      password,
+      oldPassword = '',
+    }: { id: number; password: string; oldPassword?: string },
   ) {
-    return this.usersService.changePassUser(user, id, password);
+    return this.usersService.changePassUser(user, id, password, oldPassword);
   }
 
   @UseGuards(AuthenticatedGuard)

@@ -122,13 +122,29 @@ export class UsersService {
     user: UserI,
     id: number,
     password: string,
+    oldPassword: string,
   ): Promise<{ message: string } | { errorMessage: string }> {
     if (user.role !== 'admin' && user.userId != id) {
       return { errorMessage: 'Требуются права администратора' };
     }
-    const currentUser = await this.userModel.findOne({ where: { id } });
-    currentUser.password = await bcrypt.hash(password, 10);
-    await currentUser.save();
-    return { message: `Пароль был успешно изменен !` };
+
+    if (user.role === 'admin') {
+      const currentUser = await this.userModel.findOne({ where: { id } });
+      currentUser.password = await bcrypt.hash(password, 10);
+      await currentUser.save();
+      return { message: `Пароль был успешно изменен !` };
+    }
+
+    if (user.userId === id) {
+      const currentUser = await this.userModel.findOne({ where: { id } });
+      const passValid = await bcrypt.compare(oldPassword, currentUser.password);
+      if (passValid) {
+        currentUser.password = await bcrypt.hash(password, 10);
+        await currentUser.save();
+        return { message: `Пароль был успешно изменен !` };
+      } else {
+        return { message: `Неверный старый пароль !` };
+      }
+    }
   }
 }
