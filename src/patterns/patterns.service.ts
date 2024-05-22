@@ -23,7 +23,7 @@ export class PatternsService {
   }
 
   async deletePattern(id: number) {
-    console.log('ID', id);
+    //console.log('ID', id);
     const pattern = await this.patternModel.findOne({ where: { id } });
 
     return pattern.destroy();

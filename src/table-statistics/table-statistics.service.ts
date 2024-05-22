@@ -17,13 +17,14 @@ export class TableStatisticsService {
       name: table.tableName,
       dateColumn: table.dateColumn,
       dateStart: table.dateStart,
+      lastUpdate: table.updatedAt,
     }));
   }
 
   async getById(id: number): Promise<TableStatistic> {
-    console.log('ID TABLE ', id);
+    //console.log('ID TABLE ', id);
     const table = await this.tableStatisticModel.findOne({ where: { id: id } });
-    console.log('ID TABLE ', table);
+    // console.log('ID TABLE ', table);
     return table;
   }
 

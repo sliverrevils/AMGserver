@@ -50,7 +50,7 @@ export class StatisticsService {
         where: { chart_id: chartId },
       });
     }
-    console.log('DATE ⏲️', dateStartBody, dateEndBody);
+    //console.log('DATE ⏲️', dateStartBody, dateEndBody);
     return allStats
       .filter((stat) => +stat.dateStart >= dateStartBody)
       .filter((stat) => (dateEndBody ? +stat.dateEnd <= dateEndBody : true));
@@ -125,10 +125,10 @@ export class StatisticsService {
     id: number,
   ): Promise<{ message: string } | { errorMessage: string }> {
     const currentStat = await this.statisticModel.findOne({ where: { id } });
-    console.log('CURRENT STAT', currentStat);
+    //console.log('CURRENT STAT', currentStat);
     // if (user.role === 'admin' || user.userId == currentStat.created_by) {
     const deleted = await currentStat.destroy();
-    console.log('DELETED', deleted);
+    // console.log('DELETED', deleted);
     return { message: `Запись статистики с была удалена` };
     // } else {
     //   return { errorMessage: 'Требуются права администратора' };

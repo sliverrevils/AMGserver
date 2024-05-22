@@ -26,7 +26,7 @@ export class AuthService {
     if (user.is_blocked) {
       throw new UnauthorizedException('Вы заблокированы администратором');
     }
-
+    console.log('Auth', user.email);
     if (user && passwordValid) {
       return {
         userId: user.id,

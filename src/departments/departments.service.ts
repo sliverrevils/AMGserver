@@ -72,7 +72,7 @@ export class DepartmentsService {
     user: any,
     createDepartmentDto: CreateDepartmentDto,
   ): Promise<Department | { errorMessage: string }> {
-    console.log('ID', id);
+    //console.log('ID', id);
 
     if (user.role !== 'admin')
       return { errorMessage: 'Требуются права администратора' };

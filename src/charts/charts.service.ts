@@ -87,13 +87,13 @@ export class ChartsService {
   // }
 
   async updateInfo(id: number, info: string): Promise<any[]> {
-    console.log('REQ', id, info);
+    //console.log('REQ', id, info);
     const res = await this.chartModel.update(
       { descriptions: info },
       { where: { id } },
     );
 
-    console.log('RES', res);
+    // console.log('RES', res);
     const allPatterns = await this.chartModel.findAll();
     return allPatterns;
   }
