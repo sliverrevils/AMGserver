@@ -83,6 +83,25 @@ export class UsersService {
       return { message: `пользователь с id:${id} не найден` };
     }
   }
+  async upToAdminToggle(id: string): Promise<{ message: string }> {
+    const user = await this.userModel.findOne({ where: { id } });
+
+    if (user) {
+      await this.userModel.update(
+        { role: user.role === 'user' ? 'admin' : 'user' },
+        { where: { id } },
+      );
+      return {
+        message: `пользователь "${user.email}" ${
+          user.role !== 'admin'
+            ? 'теперь имеет права администратора!'
+            : 'вернулся в ряды пользователей!'
+        }`,
+      };
+    } else {
+      return { message: `пользователь с id:${id} не найден` };
+    }
+  }
 
   async blockUser(id: string): Promise<{ message: string }> {
     const user = await this.userModel.findOne({ where: { id } });
