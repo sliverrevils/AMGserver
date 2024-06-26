@@ -52,10 +52,12 @@ export class DirectService {
       const members = JSON.parse(protocol.members).map(
         (member) => member.userId,
       );
+      const protocolNumber = JSON.parse(protocol.info).protocol;
       return {
         id: protocol.id,
         createdAt: protocol.createdAt,
         members,
+        protocolNumber,
       };
     });
     return listReady;
