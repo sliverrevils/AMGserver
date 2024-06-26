@@ -16,6 +16,7 @@ import { TablesModule } from './tables/tables.module';
 import { PatternsModule } from './patterns/patterns.module';
 import { TableStatisticsModule } from './table-statistics/table-statistics.module';
 import { ChartsListModule } from './charts-list/charts-list.module';
+import { DirectModule } from './direct/direct.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ChartsListModule } from './charts-list/charts-list.module';
     PatternsModule,
     TableStatisticsModule,
     ChartsListModule,
+    DirectModule,
   ],
   controllers: [],
   providers: [],

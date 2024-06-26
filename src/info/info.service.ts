@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { where } from 'sequelize';
 import { AdministratorsService } from 'src/administrators/administrators.service';
+import { UserI } from 'src/auth/types/typesAuth';
 import { Chart } from 'src/charts/charts.model';
 import { ChartsService } from 'src/charts/charts.service';
 import { DepartmentsService } from 'src/departments/departments.service';
+import { DirectService } from 'src/direct/direct.service';
 import { OfficesService } from 'src/offices/offices.service';
 import { PatternsService } from 'src/patterns/patterns.service';
 import { SectionsService } from 'src/sections/sections.service';
@@ -21,10 +23,17 @@ export class InfoService {
     private readonly chartsService: ChartsService,
     private readonly patternsService: PatternsService,
     private readonly tableStatisticsService: TableStatisticsService,
+    private readonly directService: DirectService,
   ) {}
 
-  async fullOrg(user: any): Promise<any | { errorMessage: string }> {
+  async fullOrg(user: UserI): Promise<any | { errorMessage: string }> {
     if (user.role === 'admin' || user.role === 'user') {
+      const userOnDirect =
+        user.role === 'admin'
+          ? true
+          : await this.directService.isUserOnDirect({
+              userId: user.userId,
+            });
       const offices = await this.officesService.allOffices();
       const users = await this.usersService.allUsers();
       const charts = await this.chartsService.getAllCharts();
@@ -124,6 +133,7 @@ export class InfoService {
       return {
         patterns: charts,
         users,
+        userOnDirect,
         offices: officesWithDepartmentsAndSectionsAndAdmins,
         tablePatterns,
         tableStatistics: (await this.tableStatisticsService.getAll()).map(

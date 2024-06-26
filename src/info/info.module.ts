@@ -9,6 +9,7 @@ import { AdministratorsModule } from 'src/administrators/administrators.module';
 import { ChartsModule } from 'src/charts/charts.module';
 import { PatternsModule } from 'src/patterns/patterns.module';
 import { TableStatisticsModule } from 'src/table-statistics/table-statistics.module';
+import { DirectModule } from 'src/direct/direct.module';
 
 @Module({
   controllers: [InfoController],
@@ -22,6 +23,7 @@ import { TableStatisticsModule } from 'src/table-statistics/table-statistics.mod
     ChartsModule,
     PatternsModule,
     TableStatisticsModule,
+    DirectModule,
   ],
   exports: [InfoService],
 })

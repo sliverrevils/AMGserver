@@ -32,8 +32,9 @@ export class TableStatisticsService {
     user: UserI,
     createTableStatisticDto: CreateTableStatisticDto,
   ): Promise<{ message: string } | { errorMessage: string }> {
-    if (user.role !== 'admin')
-      return { errorMessage: 'Требуются права администратора' };
+    // открыт доступ для создания
+    // if (user.role !== 'admin' || true)
+    //   return { errorMessage: 'Требуются права администратора' };
     const table = new TableStatistic();
     table.tableName = createTableStatisticDto.tableName;
     table.dateStart = createTableStatisticDto.dateStart;
