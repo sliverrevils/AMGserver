@@ -11,6 +11,7 @@ import { DirectService } from './direct.service';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 import { UserI } from 'src/auth/types/typesAuth';
 import { DirectSaveDto } from './dto/direct-save.dto';
+import { DirectSelectedListsDto } from './dto/direct-selected-lists.dto';
 
 @Controller('direct')
 export class DirectController {
@@ -74,5 +75,24 @@ export class DirectController {
     @Request() { user }: { user: UserI },
   ) {
     return this.directService.directSave({ saveDir, user });
+  }
+
+  //SELECTED LISTS
+  @UseGuards(AuthenticatedGuard)
+  @Get('all_selected_lists')
+  getAllSelectedLists() {
+    return this.directService.getAllSelectedLists();
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Post('save_selected_list')
+  saveSelectedList(@Body() { name, selectedStats }: DirectSelectedListsDto) {
+    return this.directService.saveList({ name, selectedStats });
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Get('delete_list/:id')
+  deleteList(@Param('id') id: number) {
+    return this.directService.deleteList(id);
   }
 }

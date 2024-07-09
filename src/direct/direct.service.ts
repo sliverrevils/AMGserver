@@ -4,6 +4,8 @@ import { DirectSettings } from './direct_settings.model';
 import { DirectSaveDto } from './dto/direct-save.dto';
 import { UserI } from 'src/auth/types/typesAuth';
 import { DirectSaves } from './direct_saves.model';
+import { DirectSelectedLists } from './direct_selectedLists.model';
+import { DirectSelectedListsDto } from './dto/direct-selected-lists.dto';
 
 @Injectable()
 export class DirectService {
@@ -12,6 +14,8 @@ export class DirectService {
     private directSettingsModel: typeof DirectSettings,
     @InjectModel(DirectSaves)
     private directSaveModel: typeof DirectSaves,
+    @InjectModel(DirectSelectedLists)
+    private directSelectedListsModel: typeof DirectSelectedLists,
   ) {}
 
   async getSettings() {
@@ -102,6 +106,27 @@ export class DirectService {
     dirForSave.tabels = saveDir.tabels;
     await dirForSave.save();
 
-    return { message: 'Протокол успешно сохранен' };
+    return { message: 'Протокол успешно сохранен ' };
+  }
+
+  async getAllSelectedLists() {
+    return this.directSelectedListsModel.findAll();
+  }
+
+  async saveList({
+    name,
+    selectedStats,
+  }: DirectSelectedListsDto): Promise<DirectSelectedLists[]> {
+    await this.directSelectedListsModel.create({
+      name,
+      selectedStats,
+    });
+
+    return this.directSelectedListsModel.findAll();
+  }
+
+  async deleteList(id: number): Promise<DirectSelectedLists[]> {
+    await this.directSelectedListsModel.destroy({ where: { id } });
+    return this.directSelectedListsModel.findAll();
   }
 }
