@@ -82,6 +82,19 @@ export class UsersController {
     }
   }
 
+  @Post('/post')
+  @UseGuards(AuthenticatedGuard)
+  changeStructure(
+    @Request() req,
+    @Body() { id, curPost }: { id: number; curPost: string },
+  ) {
+    if (req.user.role === 'admin') {
+      return this.usersService.postToggle(id, curPost);
+    } else {
+      return { message: 'Доступно только администраторам' };
+    }
+  }
+
   @Post('/role_toggle')
   @UseGuards(AuthenticatedGuard)
   upToAdmin(@Request() req, @Body() { id }) {

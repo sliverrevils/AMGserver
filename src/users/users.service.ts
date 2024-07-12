@@ -73,7 +73,7 @@ export class UsersService {
     return users;
   }
 
-  async verificateUser(id: string): Promise<{ message: string }> {
+  async verificateUser(id: number): Promise<{ message: string }> {
     const user = await this.userModel.findOne({ where: { id } });
 
     if (user) {
@@ -83,6 +83,28 @@ export class UsersService {
       return { message: `пользователь с id:${id} не найден` };
     }
   }
+  async postToggle(id: number, curPost: string): Promise<{ message: string }> {
+    const user = await this.userModel.findOne({ where: { id } });
+
+    if (user) {
+      const userPosts = JSON.parse(user.post || '[]');
+      //console.log('📃', userPosts);
+      const post: string[] = userPosts.includes(curPost)
+        ? userPosts.filter((post) => post !== curPost)
+        : [...userPosts, curPost];
+      const newPostStr = JSON.stringify(post);
+
+      //console.log('➡️', newPostStr);
+      this.userModel.update({ post: newPostStr }, { where: { id } });
+
+      return {
+        message: post.includes(curPost) ? `Доступ открыт` : `Доступ закрыт`,
+      };
+    } else {
+      return { message: `пользователь с id:${id} не найден` };
+    }
+  }
+
   async upToAdminToggle(id: string): Promise<{ message: string }> {
     const user = await this.userModel.findOne({ where: { id } });
 
