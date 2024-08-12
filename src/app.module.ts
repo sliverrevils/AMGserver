@@ -17,6 +17,7 @@ import { PatternsModule } from './patterns/patterns.module';
 import { TableStatisticsModule } from './table-statistics/table-statistics.module';
 import { ChartsListModule } from './charts-list/charts-list.module';
 import { DirectModule } from './direct/direct.module';
+import { MainSettingsModule } from './main_settings/main_settings.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { DirectModule } from './direct/direct.module';
     TableStatisticsModule,
     ChartsListModule,
     DirectModule,
+    MainSettingsModule,
   ],
   controllers: [],
   providers: [],
