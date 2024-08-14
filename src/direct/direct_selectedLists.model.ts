@@ -7,4 +7,7 @@ export class DirectSelectedLists extends Model {
 
   @Column
   selectedStats: string;
+
+  @Column
+  blankRows: string;
 }

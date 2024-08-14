@@ -116,10 +116,12 @@ export class DirectService {
   async saveList({
     name,
     selectedStats,
+    blankRows,
   }: DirectSelectedListsDto): Promise<DirectSelectedLists[]> {
     await this.directSelectedListsModel.create({
       name,
       selectedStats,
+      blankRows,
     });
 
     return this.directSelectedListsModel.findAll();

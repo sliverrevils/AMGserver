@@ -86,8 +86,10 @@ export class DirectController {
 
   @UseGuards(AuthenticatedGuard)
   @Post('save_selected_list')
-  saveSelectedList(@Body() { name, selectedStats }: DirectSelectedListsDto) {
-    return this.directService.saveList({ name, selectedStats });
+  saveSelectedList(
+    @Body() { name, selectedStats, blankRows }: DirectSelectedListsDto,
+  ) {
+    return this.directService.saveList({ name, selectedStats, blankRows });
   }
 
   @UseGuards(AuthenticatedGuard)
