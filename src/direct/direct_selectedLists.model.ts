@@ -10,4 +10,7 @@ export class DirectSelectedLists extends Model {
 
   @Column
   blankRows: string;
+
+  @Column
+  selectedCharts: string;
 }

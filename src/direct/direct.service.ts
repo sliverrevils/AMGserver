@@ -117,11 +117,13 @@ export class DirectService {
     name,
     selectedStats,
     blankRows,
+    selectedCharts,
   }: DirectSelectedListsDto): Promise<DirectSelectedLists[]> {
     await this.directSelectedListsModel.create({
       name,
       selectedStats,
       blankRows,
+      selectedCharts,
     });
 
     return this.directSelectedListsModel.findAll();

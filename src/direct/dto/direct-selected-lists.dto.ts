@@ -6,4 +6,6 @@ export class DirectSelectedListsDto {
   readonly selectedStats: string;
 
   readonly blankRows: string;
+
+  readonly selectedCharts: string;
 }
