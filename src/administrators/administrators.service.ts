@@ -43,16 +43,16 @@ export class AdministratorsService {
     if (user.role !== 'admin')
       return { errorMessage: 'Требуются права администратора' };
 
-    if (
-      await this.administratorModel.findOne({
-        where: {
-          user_id: createAdministratorDto.user_id,
-          section_id: createAdministratorDto.section_id,
-        },
-      })
-    ) {
-      return { errorMessage: 'Сотрудник уже в списке администраторов' };
-    }
+    // if (
+    //   await this.administratorModel.findOne({
+    //     where: {
+    //       user_id: createAdministratorDto.user_id,
+    //       section_id: createAdministratorDto.section_id,
+    //     },
+    //   })
+    // ) {
+    //   return { errorMessage: 'Сотрудник уже в списке администраторов' };
+    // }
 
     const administrator = new Administrator();
     administrator.office_id = createAdministratorDto.office_id;
