@@ -29,4 +29,7 @@ export class Section extends Model {
 
   @Column({ defaultValue: '[]' })
   patterns: string;
+
+  @Column({ defaultValue: 0 })
+  division_for_sector_id: number;
 }

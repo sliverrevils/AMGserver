@@ -8,6 +8,7 @@ import { CreateSectionDto } from './dto/create-section.dto';
 import { AddAdministratorDto } from './dto/add-administrator.dto';
 import { UserI } from 'src/auth/types/typesAuth';
 import { where } from 'sequelize';
+import { CreateDivisionDto } from './dto/create-division.dto';
 
 @Injectable()
 export class SectionsService {
@@ -26,15 +27,24 @@ export class SectionsService {
   async findById(id: number): Promise<Section | null> {
     return (await this.sectionModel.findOne({ where: { id } })) || null;
   }
-  //FIND BY DEPARTMENT ID
+  //FIND SECTIONS BY DEPARTMENT ID
   async findByDepartmentId(id: number): Promise<Section[]> {
-    return await this.sectionModel.findAll({ where: { department_id: id } });
+    return await this.sectionModel.findAll({
+      where: { department_id: id, division_for_sector_id: 0 },
+    });
+  }
+  //FIND SECTIONS BY DEPARTMENT ID
+  async findDivisionsBySectionId(id: number): Promise<Section[]> {
+    console.log('❤️', id);
+    return await this.sectionModel.findAll({
+      where: { division_for_sector_id: id },
+    });
   }
   //DELETE BY DEPARTMENT ID
   async deleteByDepartmentId(id: number) {
     this.sectionModel.destroy({ where: { department_id: id } });
   }
-  //CREATE
+  //CREATE SECTION
   async createSection(
     createSectionDto: CreateSectionDto,
     user: any,
@@ -53,6 +63,33 @@ export class SectionsService {
       section.administrators = createSectionDto.administrators;
       section.ckp = createSectionDto.ckp;
       section.leadership = createSectionDto.leadership;
+      await section.save();
+      return this.sectionModel.findAll();
+    } else {
+      return { errorMessage: 'Отдел либо отделение указаны не верно' };
+    }
+  }
+
+  //CREATE SECTION
+  async createDivision(
+    createDivisionDto: CreateDivisionDto,
+    user: any,
+  ): Promise<Section[] | { errorMessage: string }> {
+    if (user.role !== 'admin')
+      return { errorMessage: 'Требуются права администратора' };
+    if (
+      (await this.officesService.findById(createDivisionDto.office_id)) &&
+      (await this.departmentsService.findById(createDivisionDto.department_id))
+    ) {
+      const section = new Section();
+      section.office_id = createDivisionDto.office_id;
+      section.department_id = createDivisionDto.department_id;
+      section.name = createDivisionDto.name;
+      section.descriptions = createDivisionDto.descriptions;
+      section.administrators = createDivisionDto.administrators;
+      section.ckp = createDivisionDto.ckp;
+      section.leadership = createDivisionDto.leadership;
+      section.division_for_sector_id = createDivisionDto.division_for_sector_id;
       await section.save();
       return this.sectionModel.findAll();
     } else {

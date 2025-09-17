@@ -130,11 +130,104 @@ export class InfoService {
           ),
         })),
       );
+      const officesWithDepartmentsAndSectionsAndAdminsAndDivisions =
+        await Promise.all(
+          officesWithDepartmentsAndSectionsAndAdmins.map(async (office) => ({
+            ...office,
+            departments: await Promise.all(
+              office.departments.map(async (department) => ({
+                ...department,
+                sections: await Promise.all(
+                  department.sections.map(
+                    async ({
+                      id,
+                      office_id,
+                      department_id,
+                      name,
+                      ckp,
+                      descriptions,
+                      leadership,
+                      mainPattern,
+                      patterns,
+                      administrators,
+                    }) => ({
+                      id,
+                      office_id,
+                      department_id,
+                      name,
+                      ckp,
+                      mainPattern,
+                      patterns,
+                      descriptions,
+                      leadership,
+                      administrators,
+                      divisions:
+                        await this.sectionsService.findDivisionsBySectionId(id),
+                    }),
+                  ),
+                ),
+              })),
+            ),
+          })),
+        );
+      const officesWithDepartmentsAndSectionsAndAdminsAndDivisionsAndAdmins =
+        await Promise.all(
+          officesWithDepartmentsAndSectionsAndAdminsAndDivisions.map(
+            async (office) => ({
+              ...office,
+              departments: await Promise.all(
+                office.departments.map(async (department) => ({
+                  ...department,
+                  sections: await Promise.all(
+                    department.sections.map(async (section) => ({
+                      ...section,
+                      divisions: await Promise.all(
+                        section.divisions.map(
+                          async ({
+                            id,
+                            office_id,
+                            department_id,
+                            name,
+                            ckp,
+                            descriptions,
+                            leadership,
+                            mainPattern,
+                            patterns,
+                            administrators,
+                          }) => ({
+                            id,
+                            office_id,
+                            department_id,
+                            name,
+                            ckp,
+                            descriptions,
+                            leadership,
+                            mainPattern,
+                            patterns: JSON.parse(patterns),
+                            administrators:
+                              await this.administratorsService.findBySectionId(
+                                id,
+                              ),
+                          }),
+                        ),
+                      ),
+                    })),
+                  ),
+                })),
+              ),
+            }),
+          ),
+        );
+      console.log(
+        officesWithDepartmentsAndSectionsAndAdminsAndDivisionsAndAdmins,
+      );
+
       return {
         patterns: charts,
         users,
         userOnDirect,
-        offices: officesWithDepartmentsAndSectionsAndAdmins,
+        offices:
+          officesWithDepartmentsAndSectionsAndAdminsAndDivisionsAndAdmins,
         tablePatterns,
         tableStatistics: (await this.tableStatisticsService.getAll()).map(
           (table) => ({ ...table, dateColumn: JSON.parse(table.dateColumn) }),

@@ -11,6 +11,7 @@ import { SectionsService } from './sections.service';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 import { CreateSectionDto } from './dto/create-section.dto';
 import { AddAdministratorDto } from './dto/add-administrator.dto';
+import { CreateDivisionDto } from './dto/create-division.dto';
 
 @Controller('sections')
 export class SectionsController {
@@ -22,7 +23,7 @@ export class SectionsController {
   getAllSections() {
     return this.sectionsService.allSections();
   }
-  //CREATE
+  //CREATE SECTION
   @UseGuards(AuthenticatedGuard)
   @Post('create')
   createSection(
@@ -31,6 +32,16 @@ export class SectionsController {
   ) {
     return this.sectionsService.createSection(createSectionDto, user);
   }
+  //CREATE DIVISION
+  @UseGuards(AuthenticatedGuard)
+  @Post('create-division')
+  createDivision(
+    @Body() createDivisionDto: CreateDivisionDto,
+    @Request() { user },
+  ) {
+    return this.sectionsService.createDivision(createDivisionDto, user);
+  }
+
   //DELETE
   @UseGuards(AuthenticatedGuard)
   @Get('delete/:id')
